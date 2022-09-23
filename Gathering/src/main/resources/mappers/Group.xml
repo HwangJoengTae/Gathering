@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gathering.mapper.GroupMapper">
+    
+    <!-- 모임이름 중복체크 -->
+    <select id="getGroupByGroupName" parameterType="com.gathering.dto.GroupInfoVO" resultType="com.gathering.dto.GroupInfoVO">
+        SELECT * FROM group_info WHERE group_name=#{group_name}
+    </select>
+    
+    <!-- 모임 만들기 -->
+    <insert id="createNewGroup" parameterType="com.gathering.dto.GroupInfoVO">
+       INSERT INTO group_info VALUES(group_seq.NEXTVAL, #{group_name}, #{brief}, #{detail}, #{region}, #{member_limit})
+    </insert> 
+    <insert id="insertCrewLeader" parameterType="com.gathering.dto.CrewVO">
+       INSERT INTO crew VALUES(crew_seq.NEXTVAL, #{user_id}, #{group_seq}, #{crew_image}, #{crew_brief}, #{type})
+    </insert>
+    
+    <!-- 모임상세 -->
+    <select id="getGroupDetail" parameterType="int" resultType="com.gathering.dto.GroupInfoVO">
+    	SELECT * FROM group_info WHERE group_seq=#{group_seq}
+    </select>
+    <!-- 모임상세를 위한 정모정보 -->
+    <select id="getGroupJungmo" parameterType="int" resultType="com.gathering.dto.GroupNoticeVO">
+    	SELECT * FROM group_notice WHERE group_seq=#{group_seq} AND SUBSTR(jungmo_date, 1, INSTR(jungmo_date, 'T')-1) >= TO_CHAR(SYSDATE, 'yyyy-MM-dd')
+    </select>
+    <!-- 모임상세를 위한 회원정보 -->
+    <select id="getGroupCrews" parameterType="int" resultType="com.gathering.dto.CrewInfoVIewVO">
+		SELECT * FROM crew_info_view WHERE group_seq=#{group_seq}
+    </select>
+	
+
+
+    
+    
+    <!-- 모임리스트 전체(검색, 페이징 포함) -->
+    <sql id="criteria">
+		<trim prefix="AND (" suffix=")" prefixOverrides="OR">
+			<foreach collection="typeArr" item="type">
+				<trim prefix="OR">
+					<choose>
+						<when test="type == 'N'.toString()">
+							group_name like '%'||#{keyword}||'%'
+						</when>
+						<when test="type == 'R'.toString()">
+							region like '%'||#{keyword}||'%'
+						</when>
+					</choose>
+				</trim>
+			</foreach>
+		</trim>
+	</sql>
+	
+	<!-- 페이징부분 -->
+	<select id="getGroupListPaging" resultType="com.gathering.dto.GroupInfoVO">
+    
+    <![CDATA[
+              SELECT * FROM(
+        
+             SELECT  rownum  as rn, group_seq, group_name, brief, detail, region, member_limit FROM group_info WHERE rownum <= #{pageNum} * #{amount}
+                  ]]>
+         <if test="keyword != null">
+            <include refid="criteria"></include>
+         </if>
+       <![CDATA[
+                   )
+           WHERE rn > (#{pageNum} -1) * #{amount} ORDER BY group_seq DESC
+       ]]>
+   </select>
+   
+   
+   <!-- 모임리스트 총 갯수 -->
+   <select id="getTotalCount" resultType="int">
+      select count(*) from group_info
+      <if test="keyword != null">
+         where group_seq > 0
+         <include refid="criteria"></include>
+      </if>
+   </select>
+    
+    
+    
+    
+    
+    <!-- 모임가입하기 -->
+    <insert id="insertCrewMember" parameterType="com.gathering.dto.CrewVO">
+    	INSERT INTO crew VALUES(crew_seq.NEXTVAL, #{user_id},#{group_seq}, #{crew_image}, #{crew_brief}, #{type})
+    </insert>
+    
+    <!-- 기가입 여부 확인할때 -->
+    <select id="getCrew" parameterType="com.gathering.dto.CrewVO" resultType="com.gathering.dto.CrewVO">
+    	SELECT * FROM crew WHERE user_id=#{user_id} AND group_seq=#{group_seq}
+    </select>
+    
+    <!-- 모임 탈퇴 -->
+    <delete id="outGroupFromTable" parameterType="com.gathering.dto.CrewVO">
+    	DELETE FROM crew WHERE user_id=#{user_id} AND group_seq=#{group_seq}
+    </delete>
+    <delete id="outGroupFromView" parameterType="com.gathering.dto.CrewVO">
+    	DELETE FROM crew_info_view WHERE user_id=#{user_id} AND group_seq=#{group_seq}
+    </delete>
+    
+    <!-- 모임정보 수정 -->
+    <update id="updateGroupInfo" parameterType="com.gathering.dto.GroupInfoVO">
+    	UPDATE group_info SET group_name=#{group_name}, brief=#{brief}, detail=#{detail}, region=#{region}, member_limit=#{member_limit} WHERE group_seq=#{group_seq}
+    </update>
+    
+    
+    <!-- 모임 삭제 -->
+    <delete id="deleteGroupInfo" parameterType="int">
+    	DELETE FROM group_info WHERE group_seq=#{group_seq}
+    </delete>
+    
+    
+    <!-- 찜하기 -->
+    <insert id="addInterestGroup" parameterType="com.gathering.dto.InterestGroupVO">
+    	INSERT INTO interest_group(interest_group_seq,user_id,group_seq) VALUES(interest_group_seq.NEXTVAL, #{user_id}, #{group_seq})
+    </insert>
+    
+    <!-- 찜한모임인지 확인하기 위함 -->
+    <select id="getInterestGroup" resultType="com.gathering.dto.InterestGroupVO">
+    	SELECT * FROM interest_group WHERE user_id=#{user_id} AND group_seq=#{group_seq}
+    </select>
+    
+    <!-- 찜삭제 -->
+    <delete id="deleteInterestGroup" parameterType="com.gathering.dto.InterestGroupVO">
+    	DELETE FROM interest_group WHERE user_id=#{user_id} AND group_seq=#{group_seq}
+    </delete>
+    
+    
+    
+    
+    
+</mapper>

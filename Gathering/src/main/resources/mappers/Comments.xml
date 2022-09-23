@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gathering.mapper.CommentsMapper">
+    
+    <!--  Qna 댓글 작성 -->
+     <insert id="insertComment" parameterType="com.gathering.dto.CommentsVO" >
+      INSERT INTO comments(comment_seq, qna_seq, user_id, content) 
+         VALUES(comment_seq.NEXTVAL, #{qna_seq}, #{user_id}, #{content})
+  	 </insert>
+  	 
+  	 <!-- Qna댓글 삭제 -->
+  	 <delete id="deleteComment" parameterType="int">
+  	 	 DELETE comments WHERE qna_seq=#{qna_seq}
+  	 </delete>
+
+	<!-- Qna댓글  총 개숫 -->
+	<select id="getTotal" resultType="int">
+		SELECT count(*) from comments WHERE qna_seq=#{qna_seq}
+	</select>
+
+	<!--  Qna 댓글 리스트  -->
+   <select id="commentList"  resultType="com.gathering.dto.CommentsVO">
+      SELECT * FROM comments WHERE qna_seq=#{qna_seq} ORDER BY regDate DESC
+   </select>
+   
+   <!-- Qna댓글 페이징 -->
+   	<select id="commentListWithPaging" resultType="com.gathering.dto.CommentsVO">
+    <![CDATA[
+       		 SELECT * FROM(
+        				SELECT  rownum  as rn, user_id, content, regDate  FROM comments WHERE qna_seq=#{qna_seq} AND rownum <= #{pageNum} * #{amount} )
+	       				 WHERE rn > (#{pageNum} -1) * #{amount} ORDER BY regDate DESC
+	    ]]>
+	</select>
+	
+	
+	<!--////////////////    그룹 공지 댓글 파트      /////////////  -->
+	<!-- 댓글 작성 -->
+     <insert id="groupInsertComment" parameterType="com.gathering.dto.CommentsVO" >
+      INSERT INTO comments(comment_seq, group_notice_seq, user_id, content) 
+         VALUES(comment_seq.NEXTVAL, #{group_notice_seq}, #{user_id}, #{content})
+  	 </insert>
+
+	<!-- 댓글  총 개숫 -->
+	<select id="groupGetTotal" resultType="int">
+		SELECT count(*) from comments WHERE group_notice_seq=#{group_notice_seq}
+	</select>
+
+	<!--  댓글 리스트  -->
+   <select id="groupCommentList"  resultType="com.gathering.dto.CommentsVO">
+      SELECT * FROM comments WHERE group_notice_seq=#{group_notice_seq} ORDER BY regDate DESC
+   </select>
+   
+   <!-- 댓글 페이징 -->
+   	<select id="groupCommentListWithPaging" resultType="com.gathering.dto.CommentsVO">
+    <![CDATA[
+       		 SELECT * FROM(
+        				SELECT  rownum  as rn, user_id, content, regDate  FROM comments WHERE group_notice_seq=#{group_notice_seq} AND rownum <= #{pageNum} * #{amount} )
+	       				 WHERE rn > (#{pageNum} -1) * #{amount} ORDER BY regDate DESC
+	    ]]>
+	</select>
+   
+   <!-- /////////// 앨범 댓글 /////////////////-->
+    
+    <!--  앨범 댓글 작성 -->
+     <insert id="AlbumInsertComment" parameterType="com.gathering.dto.CommentsVO" >
+      INSERT INTO comments(comment_seq, group_album_seq, user_id, content) 
+         VALUES(comment_seq.NEXTVAL, #{group_album_seq}, #{user_id}, #{content})
+  	 </insert>
+   
+
+	<!--  앨범 댓글 리스트  -->
+   <select id="AlbumcommentList"  resultType="com.gathering.dto.CommentsVO">
+      SELECT * FROM comments where group_album_seq=#{group_album_seq} ORDER BY regDate DESC
+   </select>
+   
+   <!-- 앨범 댓글 삭제 -->
+  	 <delete id="AlbumdeleteComment" parameterType="int">
+  	 	 DELETE comments WHERE group_album_seq=#{group_album_seq}
+  	 </delete>
+   
+   
+    <!-- /////////// 수다 댓글 /////////////////-->
+	
+    <!--  수다 댓글 작성 -->
+     <insert id="SudaInsertComment" parameterType="com.gathering.dto.CommentsVO" >
+      INSERT INTO comments(comment_seq,user_id, content,suda_seq) 
+         VALUES(comment_seq.NEXTVAL,  #{user_id}, #{content},#{suda_seq})
+  	 </insert>
+   
+
+	<!--  수다 댓글 리스트  -->
+   <select id="SudacommentList"  resultType="com.gathering.dto.CommentsVO">
+      SELECT * FROM comments where suda_seq=#{suda_seq} ORDER BY regDate DESC
+   </select>
+   
+    <!-- 앨범 댓글 삭제 -->
+  	 <delete id="SudadeleteComment" parameterType="int">
+  	 	 DELETE comments WHERE suda_seq=#{suda_seq}
+  	 </delete>
+   
+   
+</mapper>

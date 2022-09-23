@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gathering.mapper.GroupNoticeMapper">
+    
+
+    <!--  모임공지 글쓰기 -->
+    <insert id="insertGroupNotice" parameterType="com.gathering.dto.GroupNoticeVO" >
+		INSERT INTO group_notice(group_notice_seq, group_seq, type, title, content, filename, jungmo_date, jungmo_place) VALUES(group_notice_seq.NEXTVAL, #{group_seq},#{type},#{title},#{content},#{filename, jdbcType=VARCHAR}, #{jungmo_date, jdbcType=VARCHAR},#{jungmo_place, jdbcType=VARCHAR})
+	</insert>
+	
+	
+	<!--  그룹공지 수정 -->
+	 <update id="updateGroupNotice" parameterType="com.gathering.dto.GroupNoticeVO">
+		UPDATE group_notice SET type=#{type}, title=#{title}, content=#{content}, filename=#{filename, jdbcType=VARCHAR}, jungmo_date=#{jungmo_date, jdbcType=VARCHAR}, jungmo_place=#{jungmo_place, jdbcType=VARCHAR} WHERE  group_notice_seq=#{group_notice_seq}
+	 </update>
+	 
+	 <!-- 그룹공지 삭제 -->
+	<delete id="deleteGroupNotice" parameterType="int">
+      DELETE group_notice WHERE group_notice_seq=#{group_notice_seq}
+    </delete>
+    
+  <!--  해당모임의 모임원 조회   -->
+    <select id="getCrewList"  resultType="com.gathering.dto.CrewInfoVIewVO">
+      SELECT * FROM crew_info_view WHERE group_seq=#{group_seq} AND user_id=#{user_id}
+    </select>
+     
+	
+    <!-- GroupNoticeList (검색 )-->
+    <sql id="criteria">
+		<trim prefix="AND (" suffix=")" prefixOverrides="OR">
+			<foreach collection="typeArr" item="type">
+				<trim prefix="OR">
+					<choose>
+						<when test="type == 'T'.toString()">
+							title like '%'||#{keyword}||'%'
+						</when>
+						<when test="type == 'C'.toString()">
+							content like '%'||#{keyword}||'%'
+						</when>
+						<when test="type == 'W'.toString()">
+							writer like '%'||#{keyword}||'%'
+						</when>
+					</choose>
+				</trim>
+			</foreach>
+		</trim>
+	</sql>
+	
+		<!--  그룹내 공지 목록(페이징) -->
+	<select id="getListPaging"  resultType="com.gathering.dto.GroupNoticeVO" parameterType="HashMap">
+    
+    <![CDATA[
+       		 SELECT * FROM(
+        
+             SELECT  rownum  as rn, group_notice_seq,title, type, content,regDate,cnt  FROM group_notice WHERE  rownum <= #{pageNum} * #{amount} AND group_seq=#{group_seq}
+                  ]]>
+			<if test="keyword != null">
+				<include refid="criteria"></include>
+			</if>
+	    <![CDATA[
+	                )
+	        WHERE rn > (#{pageNum} -1) * #{amount} ORDER BY group_notice_seq DESC
+	    ]]>
+	</select>
+	
+	<!-- groupNotice 게시물 총 개숫 -->
+	<select id="getTotal" resultType="int" >
+		select count(*) from group_notice  where group_notice_seq > 0  AND group_seq=#{group_seq}
+		<if test="keyword != null">
+			where group_notice_seq > 0 
+			<include refid="criteria"></include>
+		</if>
+	</select>
+	
+	
+	 <!-- 그룹공지 상세  -->
+    <select id="groupNoticeView"  parameterType="int" resultType="com.gathering.dto.GroupNoticeVO">
+		SELECT * FROM group_notice WHERE group_notice_seq=#{group_notice_seq}
+	</select>
+	
+	
+	<!-- 공지 조회수 증가 -->
+	<update id="groupNoticeViewCount" parameterType="int" >
+		UPDATE group_notice SET cnt = cnt + 1 WHERE group_notice_seq = #{group_notice_seq}
+	</update>
+	
+
+
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

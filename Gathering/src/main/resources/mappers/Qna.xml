@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gathering.mapper.QnaMapper">
+    
+    <!--  QnaList  출력 (페이징, 검색 제외) -->
+    
+    <select id="getQnaList" resultType="com.gathering.dto.QnaVO">
+        select * FROM qna  ORDER BY qna_seq DESC
+    </select>
+     
+    
+    <!-- QnaList (검색 )-->
+    <sql id="criteria">
+		<trim prefix="AND (" suffix=")" prefixOverrides="OR">
+			<foreach collection="typeArr" item="type">
+				<trim prefix="OR">
+					<choose>
+						<when test="type == 'T'.toString()">
+							title like '%'||#{keyword}||'%'
+						</when>
+						<when test="type == 'C'.toString()">
+							content like '%'||#{keyword}||'%'
+						</when>
+						<when test="type == 'W'.toString()">
+							writer like '%'||#{keyword}||'%'
+						</when>
+					</choose>
+				</trim>
+			</foreach>
+		</trim>
+	</sql>
+	
+	<!--  게시물 목록(페이징) -->
+	<select id="getListPaging" resultType="com.gathering.dto.QnaVO">
+    
+    <![CDATA[
+       		 SELECT * FROM(
+        
+             SELECT  rownum  as rn, qna_seq,user_id,title,content,password,regDate,security,cnt  FROM qna WHERE rownum <= #{pageNum} * #{amount}
+                  ]]>
+			<if test="keyword != null">
+				<include refid="criteria"></include>
+			</if>
+	    <![CDATA[
+	                )
+	        WHERE rn > (#{pageNum} -1) * #{amount} ORDER BY qna_seq DESC
+	    ]]>
+	</select>
+	
+	
+	<!-- qna 게시물 총 개숫 -->
+	<select id="getTotal" resultType="int">
+		select count(*) from qna
+		<if test="keyword != null">
+			where qna_seq > 0
+			<include refid="criteria"></include>
+		</if>
+	</select>
+
+    
+    <!--  Qna상세  -->
+    <select id="getQnaView"  parameterType="com.gathering.dto.QnaVO" resultType="com.gathering.dto.QnaVO">
+		SELECT * FROM qna WHERE qna_seq=#{qna_seq}
+	</select>
+    
+    <!--  Qna 글쓰기 -->
+    <insert id="insertQna" parameterType="com.gathering.dto.QnaVO" >
+		INSERT INTO qna(qna_seq, user_id, title, content, password, security) VALUES(qna_seq.NEXTVAL, #{user_id},#{title},#{content},#{password, jdbcType=VARCHAR},#{security})
+	</insert>
+    
+    <!-- 게시글 조회수 증가 -->
+	<update id="qnaViewCount" parameterType="com.gathering.dto.QnaVO" >
+		UPDATE qna SET cnt = cnt + 1 WHERE qna_seq = #{qna_seq}
+	</update>
+	
+	<!--  Qna 수정 -->
+	 <update id="updateQna" parameterType="com.gathering.dto.QnaVO">
+		UPDATE qna SET title=#{title}, content=#{content}, password=#{password, jdbcType=VARCHAR}, security=#{security} WHERE  qna_seq=#{qna_seq}
+	 </update>
+	
+	<!-- Qna 삭제 -->
+	<delete id="deleteQna" parameterType="int">
+      DELETE qna WHERE qna_seq=#{qna_seq}
+    </delete>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

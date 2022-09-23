@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gathering.mapper.MypageMapper">
+    
+    <!-- 회원정보수정 -->
+	<update id="updateUser" parameterType="com.gathering.dto.UserInfoVO">
+		UPDATE user_info SET password=#{password}, email=#{email}, phone=#{phone}, address=#{address} WHERE user_id=#{user_id}
+	</update>
+	
+	<!-- 회원탈퇴 -->
+	<delete id="deleteUser" parameterType="com.gathering.dto.UserInfoVO">
+		DELETE FROM user_info WHERE user_id=#{user_id} AND password=#{password}
+	</delete>    
+   
+   	
+	<!-- 내가 만든모임의 고유넘버-->
+	<select id="getGroupSeqForOwnedGroup" parameterType="String" resultType="int">
+		SELECT group_seq FROM crew WHERE user_id=#{user_id} AND type='1'
+	</select>
+	<!-- 내가 가입한모임의 고유넘버 -->
+	<select id="getGroupSeqForJoinedGroup" parameterType="String" resultType="int">
+		SELECT group_seq FROM crew WHERE user_id=#{user_id} AND type='2'
+	</select>
+	<!-- 내가 찜한 모임의 고유넘버 -->
+	<select id="getGroupSeqForInterestGroup" parameterType="String" resultType="int">
+		SELECT group_seq FROM interest_group WHERE user_id=#{user_id}
+	</select>
+	
+	
+	<!-- 마이페이지용 모임리스트 -->
+	<select id="getGroupListForMypage" resultType="com.gathering.dto.GroupInfoVO">
+    
+        
+             SELECT * FROM group_info WHERE group_seq=#{group_seq}
+	</select>
+	
+	<!--총 개숫--> 
+	<select id="getTotalGroupListForMypage" resultType="int">
+		SELECT count(*) FROM group_info WHERE group_seq=#{group_seq}
+	</select>	
+    
+</mapper>

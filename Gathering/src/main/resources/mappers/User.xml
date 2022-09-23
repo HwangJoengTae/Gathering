@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gathering.mapper.UserMapper">
+    
+    <!-- 사용자정보가져오기 -->
+    <select id="getUser" parameterType="com.gathering.dto.UserInfoVO" resultType="com.gathering.dto.UserInfoVO">
+        SELECT * FROM user_info WHERE user_id=#{user_id}
+    </select>
+    
+    <!-- 회원가입할때 -->
+    <insert id="insertUser" parameterType="com.gathering.dto.UserInfoVO">
+    	INSERT INTO user_info VALUES(#{user_id}, #{password}, #{name}, #{nickname}, #{gender}, TO_DATE(#{birthday}, 'yyyy/MM/dd'), #{email}, #{phone}, #{address}, #{user_type})
+    </insert>
+    
+    <!-- 이메일로 아이디찾기 -->
+    <select id="findId" parameterType="com.gathering.dto.UserInfoVO" resultType="com.gathering.dto.UserInfoVO">
+        SELECT * FROM user_info WHERE email=#{email}
+    </select>
+       
+    <!-- DB에 임시비밀번호로 변경 -->   
+    <update id="createTempPassword" parameterType="com.gathering.dto.UserInfoVO">
+    	UPDATE user_info SET password=#{password} WHERE user_id=#{user_id}
+    </update>   
+    
+     
+    
+    
+</mapper>

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gathering.mapper.AlbumMapper">
+	<!-- 시퀀스값 얻기 -->
+	<select id="getAlbumSeq" resultType="com.gathering.dto.AlbumVO">
+		select	group_album_seq,group_seq FROM group_album	where group_seq=#{group_seq}
+		
+	</select>
+
+	<!-- 리스트출력 -->
+
+	<select id="getListAlbum" resultType="com.gathering.dto.AlbumVO">
+		select * FROM group_album
+		where group_seq=#{group_seq}ORDER BY group_album_seq DESC
+	</select>
+
+
+	<!-- 앨범등록 -->
+	<insert id="InsertAlbum"
+		parameterType="com.gathering.dto.AlbumVO">
+		
+		<![CDATA[
+		insert into group_album(group_album_seq,group_seq,title,filename,user_id)
+		values(group_album_seq.NEXTVAL,#{group_seq}, #{title},#{filename},#{user_id}) 
+	]]>
+	</insert>
+
+
+  <!-- QnaList (페이징, 검색 포함)-->
+    <sql id="criteria">
+		<trim prefix="AND (" suffix=")" prefixOverrides="OR">
+			<foreach collection="typeArr" item="type">
+				<trim prefix="OR">
+					<choose>
+						<when test="type == 'T'.toString()">
+							title like '%'||#{keyword}||'%'
+						</when>
+						<when test="type == 'C'.toString()">
+							content like '%'||#{keyword}||'%'
+						</when>
+						<when test="type == 'W'.toString()">
+							writer like '%'||#{keyword}||'%'
+						</when>
+					</choose>
+				</trim>
+			</foreach>
+		</trim>
+	</sql>
+	<!--  게시물 목록(페이징) -->
+	<select id="getAlbumListPaging" resultType="com.gathering.dto.AlbumVO">
+    
+    <![CDATA[
+       		 SELECT * FROM(
+        
+             SELECT  rownum  as rn, group_album_seq,group_seq,title,filename,user_id  FROM group_album WHERE rownum <= #{pageNum} * #{amount}
+                  ]]>
+			
+			<if test="keyword != null">
+				<include refid="criteria"></include>
+			</if>
+	    <![CDATA[
+	                )
+	        WHERE rn > (#{pageNum} -1) * #{amount} and group_seq=#{group_seq} ORDER BY group_album_seq DESC
+	    ]]>
+	</select>
+	
+	<!-- 앨범 게시물 총 개숫 -->
+	<select id="getAlbumTotal" resultType="int">
+		select count(*) from group_album
+		<if test="keyword != null">
+			where group_seq > 0
+			<include refid="criteria"></include>
+		</if>
+		
+	</select>
+	
+	
+	<!-- 앨범 상세 보기  -->
+	<select id="albumDetail" resultType="com.gathering.dto.AlbumVO">
+	
+		select * from group_album where group_album_seq=#{group_album_seq}
+	
+	</select>
+	
+	<!--  앨범 수정하기  -->
+	<update id="updateAlbum" parameterType="com.gathering.dto.AlbumVO">
+		update group_album SET title=#{title},filename=#{filename,jdbcType=VARCHAR} where group_album_seq=#{group_album_seq}
+	</update>
+	
+	
+	<!-- 앨범 삭제  -->
+	<delete id="deleteAlbum" parameterType="com.gathering.dto.AlbumVO">
+      DELETE group_album WHERE group_album_seq=#{group_album_seq}
+    </delete>
+	
+	
+	
+	
+	
+</mapper>

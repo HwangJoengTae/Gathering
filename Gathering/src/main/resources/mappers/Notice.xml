@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gathering.mapper.NoticeMapper">
+
+
+
+	<!-- 공지사항 리스트 조회 -->
+
+	<!-- <select id="getNoticeList" resultType="com.gathering.dto.NoticeVO" 
+		parameterType="com.gathering.dto.NoticeVO"> <![CDATA[ SELECT *FROM notice 
+		]]> </select> -->
+
+	<!-- 검색 조건문 -->
+	<sql id="criteria">
+		<trim prefix="AND (" suffix=")" prefixOverrides="OR">
+			<foreach collection="typeArr" item="type">
+				<trim prefix="OR">
+					<choose>
+						<when test="type == 'T'.toString()">
+							title like '%'||#{keyword}||'%'
+						</when>
+						<when test="type == 'C'.toString()">
+							content like '%'||#{keyword}||'%'
+						</when>
+						<when test="type == 'W'.toString()">
+							writer like '%'||#{keyword}||'%'
+						</when>
+					</choose>
+				</trim>
+			</foreach>
+		</trim>
+
+	</sql>
+
+
+	<!-- 게시물 목록(페이징) -->
+	<select id="getListPaging"
+		resultType="com.gathering.dto.NoticeVO">
+    
+    <![CDATA[
+        
+        select notice_seq,user_id,title,content,cnt,regdate from(
+        
+                select /*+INDEX_DESC(notice pk_board) */ rownum  as rn, notice_seq,user_id,title,content,cnt,regdate
+                  
+                from notice where rownum <= #{pageNum} * #{amount} 
+                  ]]>
+		<if test="keyword != null">
+			<include refid="criteria"></include>
+		</if>
+		
+    
+    <![CDATA[
+                )
+                
+        where rn > (#{pageNum} -1) * #{amount} 
+    
+    ]]>
+
+	</select>
+
+
+	<!-- 공지사항 등록하기 -->
+	<insert id="InsertNotice"
+		parameterType="com.gathering.dto.NoticeVO">
+		<selectKey resultType="int" keyProperty="notice_seq"
+			order="AFTER">
+
+			SELECT notice_seq.currval from dual
+
+		</selectKey>
+
+
+		INSERT INTO
+		notice
+		(notice_seq,user_id,title,content,cnt,regdate)
+
+		VALUES(notice_seq.NEXTVAL,#{user_id},#{title},#{content},0,sysdate)
+
+	</insert>
+
+	<!-- 공지사항 상세보기 -->
+	<select id="getNotice" resultType="com.gathering.dto.NoticeVO">
+
+		select * from notice where
+		notice_seq = #{notice_seq}
+
+	</select>
+
+
+	<!-- 공지사항 수정하기 -->
+	<update id="updateNotice"
+		parameterType="com.gathering.dto.NoticeVO">
+		<![CDATA[
+		update notice set title = #{title}, content = #{content} where notice_seq =#{notice_seq}
+		]]>
+	</update>
+
+	<!-- 공지사항 삭제하기 -->
+	<delete id="deleteNotice"
+		parameterType="com.gathering.dto.NoticeVO">
+		DELETE
+		from
+		notice
+		WHERE
+		notice_seq=#{notice_seq}
+
+	</delete>
+
+
+	<!-- 게시물 총 개숫 -->
+	<select id="getTotal" resultType="int">
+
+		select count(*) from notice
+
+		<if test="keyword != null">
+
+			where notice_seq > 0
+			<include refid="criteria"></include>
+
+		</if>
+
+	</select>
+
+	<!-- 게시물 목록(페이징) -->
+	<select id="sortlist" resultType="com.gathering.dto.NoticeVO">
+    
+    <![CDATA[
+        
+        select notice_seq,user_id,title,content,cnt,regdate from(
+        
+                select  rownum  as rn, notice_seq,user_id,title,content,cnt,regdate
+                  
+                from notice where rownum <= #{pageNum} * #{amount} 
+                  ]]>
+		<if test="keyword != null">
+			<include refid="criteria"></include>
+		</if>
+		
+    
+    <![CDATA[
+                )
+        where rn > (#{pageNum} -1) * #{amount} <choose>
+    <when test='order != null and order != ""'>
+        ORDER BY sysdate 
+    </when>
+    <otherwise>
+        ORDER BY notice_seq
+    </otherwise>
+</choose>
+    
+    ]]>
+
+
+
+	</select>
+	
+	<!-- 이미지 등록 -->
+	<insert id="imageEnroll">
+		INSERT INTO files (file_seq,notice_seq,fileName,uploadPath,uuid)
+		VALUES(file_seq.NEXTVAL,#{notice_seq},#{fileName},#{uploadPath},#{uuid})
+
+	</insert>
+
+	<!-- 게시글 조회수 증가 -->
+	<update id="noticeViewCount"
+		parameterType="com.gathering.dto.NoticeVO">
+		UPDATE notice SET cnt = cnt + 1
+		WHERE notice_seq = #{notice_seq}
+	</update>
+
+	<!-- 이미지 전체 삭제 --> 
+	<delete id="deleteImageAll">
+	
+		delete FROM files where notice_seq = #{notice_seq}
+	
+	</delete>
+	
+	<!--  이미지 정보 얻기 -->
+	<select id="getAttachInfo" resultType="com.gathering.dto.NoticeVO">
+	
+		select * from files where notice_seq = #{notice_seq}
+	
+	</select>
+
+</mapper>
