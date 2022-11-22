@@ -69,6 +69,12 @@ public class SudaServiceImpl implements SudaService {
 		
 	}
 
+	@Override
+	public int updateReplyCount(int suda_seq) {
+		
+		return sudaMapper.updateReplyCount(suda_seq);
+	}
+
 	
 	
 	

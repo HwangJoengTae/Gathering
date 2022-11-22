@@ -28,8 +28,7 @@
 	rel="stylesheet" />
 <!-- Core theme CSS (includes Bootstrap)-->
 <link href="../css/styles.css" rel="stylesheet" />
-<style type="text/css">
-</style>
+
 </head>
 
 <body id="page-top">
@@ -143,40 +142,50 @@
 $(document).ready(function(){
 	/* 이미지 정보 호출 */
 	let notice_seq = '<c:out value="${noticeInfo.notice_seq}"/>';
-	let uploadReslut = $("#uploadReslut");
+	let str = "";
 	
 	$.getJSON("/getAttachList", {notice_seq : notice_seq}, function(arr){	
-		
+			
 		if(arr.length === 0){			
+			let uploadReslut = $("#uploadReslut");
 			let str = "";
 			str += "<div id='result_card'>";
 			str += "<img src='../images/NoImage.png'>";
 			str += "</div>";
-			
+						
 			uploadReslut.html(str);	
-			
+						
 			
 			return;
-		}	
-		
-		
-		
-		
-		let str = "";
-		let obj = arr[0];
-		
-		let fileCallPath = encodeURIComponent(obj.uploadPath + "/s_" + obj.uuid + "_" + obj.fileName);
-		str += "<div id='result_card'";
-		str += "data-path='" + obj.uploadPath + "' data-uuid='" + obj.uuid + "' data-filename='" + obj.fileName + "'";
-		str += ">";
-		str += "<img src='/display?fileName=" + fileCallPath +"'></div>";
-		str += "<input type='hidden' name='imageList[0].fileName' value='"+ obj.fileName +"'>";
-		str += "<input type='hidden' name='imageList[0].uuid' value='"+ obj.uuid +"'>";
-		str += "<input type='hidden' name='imageList[0].uploadPath' value='"+ obj.uploadPath +"'>";
-		str += "</div>";		
-		
-		uploadReslut.html(str);	
-		
+			}
+			
+			$(arr).each(function(index,obj){
+			console.log("게시물 번호 : "+notice_seq);
+			console.log("인덱스 번호 : "+index);
+		    console.log("filename : " + obj.fileName);
+		    console.log("uuid : " + obj.uuid);
+		    console.log("uploadPath : " +obj.uploadPath);
+			
+		    
+		    let uploadReslut = $("#uploadReslut");
+			let fileCallPath = obj.uploadPath.replace(/\\/g, '/') + "/s_" + obj.uuid + "_" + obj.fileName;
+			
+			console.log("콜패스 : " +fileCallPath);
+	     	
+			str += "<div id='result_card'>";
+			str += "<img src='/display?fileName=" + fileCallPath +"'>";
+			str += "<input type='hidden' name='imageList["+index+"].fileName' value='"+ obj.fileName +"'>";
+			str += "<input type='hidden' name='imageList["+index+"].uuid' value='"+ obj.uuid +"'>";
+			str += "<input type='hidden' name='imageList["+index+"].uploadPath' value='"+ obj.uploadPath +"'>";		
+			str += "</div>";	
+			
+			uploadReslut.html(str);	
+						
+			
+			
+		});
+	
+						
 	});	
 	
 });
@@ -197,7 +206,7 @@ $(document).ready(function(){
 
 		}
 	
-	<!-- 수정 스크립트 -->
+		<!-- 수정 스크립트 -->
 	
 		let form = $("#infoForm");
 

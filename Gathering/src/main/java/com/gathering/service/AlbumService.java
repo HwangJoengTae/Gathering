@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.gathering.dto.AlbumVO;
-import com.gathering.dto.GroupInfoVO;
 import com.gathering.paging.Criteria;
 
 public interface AlbumService {
@@ -33,5 +32,6 @@ public interface AlbumService {
 	//앨범 수정
 	public int updateAlbum(AlbumVO albumVO);
 	
-	
+	//댓글 갯수
+	public int updateReplyCount(int group_album_seq);
 }

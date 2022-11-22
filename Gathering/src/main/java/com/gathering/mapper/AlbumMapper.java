@@ -36,5 +36,7 @@ public interface AlbumMapper {
 	//앨범 수정
 	public int updateAlbum(AlbumVO albumVO);
 	
+	public int updateReplyCount(int group_album_seq);
+	
 	
 }

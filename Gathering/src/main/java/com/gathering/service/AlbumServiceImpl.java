@@ -71,7 +71,13 @@ public class AlbumServiceImpl implements AlbumService {
 	}
 
 	
-
+	@Override
+	public int updateReplyCount(int group_album_seq) {
+		
+		return albumMapper.updateReplyCount(group_album_seq);
+		
+	}
+	
 	
 
 	

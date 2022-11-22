@@ -36,7 +36,7 @@ public class uploadController {
 	public ResponseEntity<List<FilesVO>> uploadAjaxActionPOST(MultipartFile[] uploadFile) {
 
 		logger.info("uploadAjaxActionPoast");
-
+		
 		/* 이미지 파일 체크 */
 		for (MultipartFile multipartFile : uploadFile) {
 
@@ -126,7 +126,7 @@ public class uploadController {
 		}
 		ResponseEntity<List<FilesVO>> result = new ResponseEntity<List<FilesVO>>(list, HttpStatus.OK);
 
-		System.out.println(list);
+		System.out.println("파일리스트 : "+list);
 		return result;
 	}
 	
