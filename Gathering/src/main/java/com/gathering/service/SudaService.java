@@ -31,7 +31,8 @@ public interface SudaService {
 	//수다 수정하기 
 	public void updateSuda(SudaVO sudaVO);
 	
-	
+	//댓글 갯수
+	public int updateReplyCount(int suda_seq);
 	
 	
 }

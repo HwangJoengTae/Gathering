@@ -10,6 +10,7 @@ public class SudaVO {
 	private String user_id;
 	private int group_seq;
 	private String content;
+	private int reply_count;
 	
 	
 	

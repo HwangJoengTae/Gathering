@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
@@ -111,13 +112,10 @@ public class SudaController {
 		if (user == null) {
 			return "user/login";
 		} else {
-			
+			//크루 관련 group_seq 와 user_id 얻어오기 
 			List<CrewInfoVIewVO> crew=groupNoticeService.getCrewList(sudaVO.getGroup_seq(), user.getUser_id());	 
 			model.addAttribute("crewList",crew);
-			System.out.println("크루 목록-----"+crew);	
 			
-			
-			System.out.println(sudaVO);
 		return "/group/groupSudaForm";
 		}
 	}
@@ -149,7 +147,7 @@ public class SudaController {
 	}
 
 	// 수다 상세 보기
-	@RequestMapping("/sudaDetail")
+	@GetMapping("/sudaDetail")
 	public String sudaDetail(SudaVO sudaVO, HttpSession session,Model model) {
 		SudaVO suda = sudaService.getSudaView(sudaVO.getSuda_seq());
 		UserInfoVO user = (UserInfoVO) session.getAttribute("user");
@@ -158,11 +156,15 @@ public class SudaController {
 			return "user/login";
 
 		} else {
+			//크루 불러오기
 			List<CrewInfoVIewVO> crew=groupNoticeService.getCrewList(sudaVO.getGroup_seq(), user.getUser_id());	 
-			model.addAttribute("crewList",crew);
-			System.out.println("크루 목록-----"+crew);
 			
+			model.addAttribute("crewList",crew);
+			//수다 게시글 정보 			
 			model.addAttribute("sudaInfo",suda);
+			
+			sudaService.updateReplyCount(sudaVO.getSuda_seq());
+			
 			System.out.println(suda);
 			return "/group/groupSudaDetail";
 		}
@@ -170,7 +172,7 @@ public class SudaController {
 	}
 	
 	//수다 삭제하기
-	@RequestMapping("/sudadelete")
+	@PostMapping("/sudadelete")
 	public String sudaDelete(HttpSession session, SudaVO sudaVO,Model model) {
 		UserInfoVO user = (UserInfoVO) session.getAttribute("user");
 
@@ -183,9 +185,9 @@ public class SudaController {
 			}
 		}
 	
-	//수다 수정창 이동하기 
-	
-		@RequestMapping("/sudaUpdateForm")
+		 
+		//수다 수정창 이동하기	
+		@GetMapping("/sudaUpdateForm")
 		public String sudaUpdate(SudaVO sudaVO, HttpSession session,Model model) {
 			
 			UserInfoVO user = (UserInfoVO) session.getAttribute("user");
@@ -203,8 +205,8 @@ public class SudaController {
 		}
 	
 	
-	//수다 수정하기 
-		@RequestMapping("/sudaUpdate")
+		//수다 수정하기 
+		@PostMapping("/sudaUpdate")
 		public String sudaUpdateAction(SudaVO sudaVO, HttpSession session,Model model) {
 			
 			UserInfoVO user = (UserInfoVO) session.getAttribute("user");

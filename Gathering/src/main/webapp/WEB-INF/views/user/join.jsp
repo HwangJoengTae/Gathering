@@ -9,7 +9,7 @@
 	content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 <meta name="description" content="" />
 <meta name="author" content="" />
-<title>One Page Wonder - Start Bootstrap Template</title>
+<title>게더링(Gathering)</title>
 <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
 <!-- Font Awesome icons (free version)-->
 <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js"
@@ -38,17 +38,10 @@
 	<div class="col-12">
 		<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
 
-
-
-
 			<h2 style="padding-top: 5%">회원가입</h2>
-
-
 			<!-- 회원가입 폼-->
-
 			<form action="joinForm" id="joinForm" method="post"
 				class="container row" style="float: none; margin: 100 auto;">
-
 				<div class="mb-3">
 					<!--회원ID-->
 					<div class="row mb-2">

@@ -10,6 +10,7 @@ public class AlbumVO {
 	private String title;
 	private String filename;
 	private String user_id;
+	private int reply_count;
 	
 	
 	

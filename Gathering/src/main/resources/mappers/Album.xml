@@ -54,7 +54,7 @@
     <![CDATA[
        		 SELECT * FROM(
         
-             SELECT  rownum  as rn, group_album_seq,group_seq,title,filename,user_id  FROM group_album WHERE rownum <= #{pageNum} * #{amount}
+             SELECT /*+INDEX_DESC(group_album SYS_C008872) */ rownum  as rn, group_album_seq,group_seq,title,filename,user_id,reply_count  FROM group_album WHERE rownum <= #{pageNum} * #{amount}
                   ]]>
 			
 			<if test="keyword != null">
@@ -62,7 +62,7 @@
 			</if>
 	    <![CDATA[
 	                )
-	        WHERE rn > (#{pageNum} -1) * #{amount} and group_seq=#{group_seq} ORDER BY group_album_seq DESC
+	        WHERE rn > (#{pageNum} -1) * #{amount} 
 	    ]]>
 	</select>
 	
@@ -95,7 +95,12 @@
       DELETE group_album WHERE group_album_seq=#{group_album_seq}
     </delete>
 	
-	
+	<!-- 댓글 갯수  -->
+	<update id="updateReplyCount" parameterType="com.gathering.dto.AlbumVO">
+	update group_album b
+	set b.reply_count = (select count(group_album_seq) from comments where group_album_seq = #{group_album_seq})
+	where b.group_album_seq = #{group_album_seq}
+	</update>
 	
 	
 	

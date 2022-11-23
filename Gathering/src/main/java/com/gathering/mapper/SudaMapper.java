@@ -1,11 +1,9 @@
 package com.gathering.mapper;
 
-import java.util.HashMap;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.gathering.dto.CrewVO;
 import com.gathering.dto.SudaVO;
 import com.gathering.paging.Criteria;
 
@@ -35,4 +33,7 @@ public interface SudaMapper {
 			
 	//수다 수정하기 
 	public void updateSuda(SudaVO sudaVO);
+	
+	//댓글 갯수
+	public int updateReplyCount(int suda_seq);
 }

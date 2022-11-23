@@ -151,24 +151,20 @@ public class GroupAlbumController {
 	}
 	}
 	// 앨범 댓글창으로 이동하기
-	@RequestMapping("/group/albumDetail")
+	@GetMapping("/group/albumDetail")
 	public String albumDetailView(HttpSession session,AlbumVO albumVO,Model model) {
 		UserInfoVO user= (UserInfoVO)session.getAttribute("user");
 		if(user == null) {
 			return "/alerts/mustLoginAlert";
 		} else {			
-			List<CrewInfoVIewVO> crew=groupNoticeService.getCrewList(albumVO.getGroup_seq(), user.getUser_id());	 
-			model.addAttribute("crewList",crew);
-			System.out.println("크루 목록-----"+crew);
-		
+		List<CrewInfoVIewVO> crew=groupNoticeService.getCrewList(albumVO.getGroup_seq(), user.getUser_id());	 
+		model.addAttribute("crewList",crew);
+				
 		AlbumVO albumInfo = albumService.albumDetail(albumVO.getGroup_album_seq());
-
 		model.addAttribute("albumInfo", albumInfo);
 		
-		
-		
-		
-		
+		albumService.updateReplyCount(albumVO.getGroup_album_seq());
+		System.out.println("크루 목록-----"+crew);
 		System.out.println("앨범 정보------"+albumInfo);
 		
 		return "/group/groupAlbumDetail";

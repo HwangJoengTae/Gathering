@@ -39,7 +39,7 @@
     <![CDATA[
        		 SELECT * FROM(
         
-             SELECT  rownum  as rn, suda_seq,crew_seq,user_id,group_seq,content FROM suda WHERE rownum <= #{pageNum} * #{amount}
+             SELECT /*+INDEX_DESC(suda SYS_C008863) */ rownum  as rn, suda_seq,crew_seq,user_id,group_seq,content,reply_count FROM suda WHERE rownum <= #{pageNum} * #{amount}
                   ]]>
                   <if test="keyword != null">
 				<include refid="criteria"></include>
@@ -47,7 +47,7 @@
 			
 	    <![CDATA[
 	                )
-	        WHERE rn > (#{pageNum} -1) * #{amount} AND group_seq=#{group_seq} ORDER BY suda_seq DESC
+	        WHERE rn > (#{pageNum} -1) * #{amount} 
 	    ]]>
 	</select>
 	
@@ -93,6 +93,14 @@
 		
 		update suda SET content=#{content} where suda_seq=#{suda_seq}
 		
+	</update>
+	
+	<!-- 댓글 갯수  -->
+	<update id="updateReplyCount" parameterType="com.gathering.dto.SudaVO">
+	update suda b
+	set b.reply_count = (select count(suda_seq)
+						 from comments where suda_seq=#{suda_seq})
+    where b.suda_seq=#{suda_seq}
 	</update>
 
 </mapper>

@@ -211,24 +211,30 @@
 			/* 전달받은 데이터 검증 */
 			if(!uploadResultArr || uploadResultArr.length == 0){return}
 			
-			let uploadResult = $("#uploadResult");
-			
-			let obj = uploadResultArr[0];
-			
-			let str = "";
-			
-			
-			let fileCallPath = obj.uploadPath.replace(/\\/g, '/') + "/s_" + obj.uuid + "_" + obj.fileName;
-			
-			str += "<div id='result_card'>";
-			str += "<img src='/display?fileName=" + fileCallPath +"'>";
-			str += "<div class='imgDeleteBtn' data-file='" + fileCallPath + "'>x</div>";
-			str += "<input type='hidden' name='imageList[0].fileName' value='"+ obj.fileName +"'>";
-			str += "<input type='hidden' name='imageList[0].uuid' value='"+ obj.uuid +"'>";
-			str += "<input type='hidden' name='imageList[0].uploadPath' value='"+ obj.uploadPath +"'>";		
-			str += "</div>";
-			
-			uploadResult.append(str); 
+			$.each(uploadResultArr, function(index, obj) {
+			      /*
+				  console.log("인덱스 번호 : "+index);
+			      console.log("filename : " + obj.fileName);
+			      console.log("uuid : " + obj.uuid);
+			      console.log("uploadPath : " +obj.uploadPath);
+			      */
+			     	
+			      	let uploadResult = $("#uploadResult");
+			      	let str = "";
+					
+					let fileCallPath = obj.uploadPath.replace(/\\/g, '/') + "/s_" + obj.uuid + "_" + obj.fileName;
+					 
+			     	str += "<div id='result_card'>";
+					str += "<img src='/display?fileName=" + fileCallPath +"'>";
+					str += "<div class='imgDeleteBtn' data-file='" + fileCallPath + "'>x</div>";
+					
+					str += "<input type='hidden' name='imageList["+index+"].fileName' value='"+ obj.fileName +"'>";
+					str += "<input type='hidden' name='imageList["+index+"].uuid' value='"+ obj.uuid +"'>";
+					str += "<input type='hidden' name='imageList["+index+"].uploadPath' value='"+ obj.uploadPath +"'>";		
+					str += "</div>";
+					
+					uploadResult.append(str); 
+			});
 		}
 		
 		/* 이미지 삭제 버튼 동작 */
