@@ -82,6 +82,9 @@
 
 				<form method="get" id="moveForm" action="/group/groupSuda">
 					<h2 style="padding-top: 5%">수다방</h2>
+					<button type="button"  class="btn btn-outline-dark " >조회순</button>
+					<button type="button"  class="btn btn-outline-dark " data-bs-toggle="button" >댓글순</button>
+					<button type="button"  class="btn btn-outline-dark ">최신순</button>
 					
 					
 

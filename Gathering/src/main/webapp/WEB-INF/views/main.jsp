@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta name="description" content="" />
     <meta name="author" content="" />
-    <title>One Page Wonder - Start Bootstrap Template</title>
+    <title>모임</title>
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
     <!-- Font Awesome icons (free version)-->
     <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
@@ -42,13 +42,14 @@
 
     </header>
     <!-- Content section 1-->
-    <section id="scroll">
+    
         <div class="container px-5">
             <div class="row gx-5 align-items-center">
                 <div class="col-lg-6 order-lg-2">
-                    <div class="p-5"><img class="img-fluid rounded-circle"
-                            src="/images/main2.jpg"/></div>
+                    <div class="p-5">
+                    <img class="img-fluid rounded-circle" src="/images/main2.jpg"/></div>
                 </div>
+                
                 <div class="col-lg-6 order-lg-1">
                     <div class="p-5">
                         <h2 class="display-4">현재 활동중인 모임을 둘러보세요!</h2>
@@ -58,7 +59,8 @@
                 </div>
             </div>
         </div>
-    </section>
+       
+
     <!-- Content section 2-->
     <section>
         <div class="container px-5">
