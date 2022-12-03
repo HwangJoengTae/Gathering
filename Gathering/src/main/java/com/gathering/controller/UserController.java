@@ -1,6 +1,8 @@
 package com.gathering.controller;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,10 +17,13 @@ import com.gathering.service.UserService;
 import com.gathering.util.FindUtil;
 import com.gathering.util.MailUtil;
 
+import lombok.extern.log4j.Log4j2;
+
+@Log4j2
 @SessionAttributes("user")
 @Controller
 public class UserController {
-
+	
 	@Autowired
 	private UserService userService;
 	
@@ -43,7 +48,7 @@ public class UserController {
 	// 회원가입하기
 	@PostMapping("/user/joinForm")
 	public String joinAction(UserInfoVO vo) {
-		System.out.println(vo);
+		log.info(vo);
 
 		userService.insertUser(vo);
 		
@@ -54,7 +59,7 @@ public class UserController {
 	// 아이디 중복체크하기
 	@RequestMapping("/user/id_check_form")
 	public String idCheck(UserInfoVO vo, Model model) {
-		
+		log.info("유저 아이디 확인  :"+userService.getUser(vo)); //유저 아이디 정보 로그 
 		model.addAttribute("user_id", vo.getUser_id());
 		int result = 0;
 		
@@ -175,19 +180,5 @@ public class UserController {
 		model.addAttribute("a", 1);
 		return "/user/findUserInfo";
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+				
 }
