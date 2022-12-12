@@ -39,9 +39,10 @@
     <![CDATA[
        		 SELECT * FROM(
         
-             SELECT /*+INDEX_DESC(suda SYS_C008863) */ rownum  as rn, suda_seq,crew_seq,user_id,group_seq,content,reply_count FROM suda WHERE rownum <= #{pageNum} * #{amount}
-                  ]]>
-                  <if test="keyword != null">
+             SELECT /*+INDEX_DESC(suda SYS_C008863) */ rownum  as rn, suda_seq,crew_seq,user_id,group_seq,content,reply_count,(select count(*) from board_like where suda_seq=suda.suda_seq) as like_cnt FROM suda WHERE rownum <= #{pageNum} * #{amount}
+     ]]>
+      
+            <if test="keyword != null">
 				<include refid="criteria"></include>
 			</if>
 			
@@ -102,7 +103,26 @@
 						 from comments where suda_seq=#{suda_seq})
     where b.suda_seq=#{suda_seq}
 	</update>
-
+	
+	<!-- 좋아요 검색 -->
+	<select id="findLike" resultType="int">
+		select count(*) from board_like where suda_seq=${suda_seq} and user_id=#{user_id}
+	</select>
+	
+	<!-- 좋아요 갯수 가져오기 -->
+	<select id="getLike" resultType="com.gathering.dto.LikeVO">
+		select like_seq,suda_seq,user_id,likenum from board_like where suda_seq=${suda_seq} and user_id=#{user_id}
+	</select>
+	
+	<!-- 좋아요 업 -->
+	<insert id="likeUp" parameterType="com.gathering.dto.LikeVO">
+		insert into board_like(like_seq,suda_seq,user_id,likenum) values(like_seq.NEXTVAL,#{suda_seq},#{user_id},1)
+	</insert>
+	
+	<!-- 좋아요 다운 -->
+	<delete id="likeDown">
+	  	delete from board_like where suda_seq = #{suda_seq} and user_id = #{user_id} 
+	  </delete>
 </mapper>
 
 

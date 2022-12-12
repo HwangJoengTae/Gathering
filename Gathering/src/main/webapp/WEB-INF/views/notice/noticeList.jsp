@@ -11,7 +11,7 @@
 	content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 <meta name="description" content="" />
 <meta name="author" content="" />
-<title>One Page Wonder - Start Bootstrap Template</title>
+<title>공지사항</title>
 <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
 <!-- Font Awesome icons (free version)-->
 <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js"
@@ -53,10 +53,11 @@
 
 	<div class="col-10">
 		<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-
+			
 			<h2 style="padding-top: 5%">공지사항</h2>
-
+			
 			<div class="row mb-2 align-items-center-between my-3">
+				
 				<div class="col-5" id="product_order_list"></div>
 
 				<div class="col">

@@ -102,7 +102,7 @@ public class NoticeController {
 	@GetMapping(value = "/notice/noticeUpdate")
 	public String update(@ModelAttribute("searchVO") NoticeVO searchVO, @RequestParam("notice_seq") int notice_seq,
 			Model model) {
-
+		log.info("요청된 공지게시글 번호는 "+ notice_seq + " 입니다.");
 		NoticeVO noticeInfo = noticeService.getNotice(notice_seq);
 		model.addAttribute("noticeInfo", noticeInfo);
 		model.addAttribute("cri", searchVO);
@@ -115,10 +115,11 @@ public class NoticeController {
 	@PostMapping(value = "/notice/update_action")
 	public String update_action(@ModelAttribute("searchVO") NoticeVO searchVO, HttpServletRequest request,
 								RedirectAttributes redirect, Model model) {
-
+		
 		noticeService.updateNotice(searchVO);
 		redirect.addFlashAttribute("result", "modify sucess");
 		System.out.println("내용값 확인" + searchVO.getContent());
+		log.info("변경된 내용은 :  "+ searchVO.getContent());
 
 		return "redirect:/notice/noticeDetail?notice_seq=" + searchVO.getNotice_seq();
 	}
@@ -135,7 +136,7 @@ public class NoticeController {
 
 		} catch (Exception e) {
 			redirect.addFlashAttribute("msg", "오류가 발생되었습니다.");
-
+			log.error("잘못된 요청으로 에러가 발생했습니다");	
 		}
 
 		return "redirect:/notice/noticeList";
@@ -161,7 +162,7 @@ public class NoticeController {
 
 		} catch (Exception e) {
 
-			e.printStackTrace();
+			log.error("잘못된 요청으로 에러가 발생했습니다.");
 
 			return new ResponseEntity<String>("fail", HttpStatus.NOT_IMPLEMENTED);
 
@@ -186,7 +187,7 @@ public class NoticeController {
 			result = new ResponseEntity<>(FileCopyUtils.copyToByteArray(file), header, HttpStatus.OK);
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			log.error("잘못된 요청으로 에러가 발생했습니다.");
 		}
 
 		return result;

@@ -10,7 +10,7 @@
 	content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 <meta name="description" content="" />
 <meta name="author" content="" />
-<title>One Page Wonder - Start Bootstrap Template</title>
+<title>수다방</title>
 <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
 <!-- Font Awesome icons (free version)-->
 <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js"
@@ -27,6 +27,7 @@
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <!-- Core theme CSS (includes Bootstrap)-->
 <link href="../css/styles.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.6.0/font/bootstrap-icons.css">
 <style>
 c {
 	color: #000;
@@ -51,13 +52,31 @@ c:hover:after {
 </head>
 
 <body id="page-top">
-	<h1 style="text-align:center; margin:40px 40px;">${sudaInfo.content}</h1>
 	
-
-
-	<div class="table-responsive">
+	
+	
+	<h1 style="text-align:center; margin:40px 40px;">${sudaInfo.content}</h1>
+	<!-- 이미좋아요를 눌렀다면 -->
+	<c:if test="${like > 0 }"> 
+	<button id=LikeBtn class="btn btn-outline-danger bi bi-heart-fill bt-3" ></button>
+	
+	</c:if>
+	<!--  좋아요를 눌르지 않았다면  -->
+	<c:if test="${like <= 0 }"> 
+	<button id=LikeBtn class="btn btn-light bi bi-heart bt-3"></button>
+	</c:if>
+	
+	<b>좋아요</b> 
+	<b class="ms-1"> <c:choose>
+						 <c:when test="${getLike.likenum==null }">0개</c:when>
+						 <c:when test="${getLike.likenum>=1}">${getLike.likenum}개</c:when>
+					 </c:choose>
+	
+	</b>
+	
+	<div class="table-responsive mt-3" >
 		
-		<table class="table table-sm">
+		<table class="table table-sm" >
 
 
 			<tbody>
@@ -71,7 +90,7 @@ c:hover:after {
 						</form>
 					</th>
 				</tr>
-
+					
 
 				<tr>
 					<td colspan="3">
@@ -149,8 +168,64 @@ c:hover:after {
 	<script type="text/javascript">
 	//문의사항상세 로딩시에 해당 댓글목록 조회하여 출력
 	$(document).ready(function() {
+		var likeval = ${like};
+		
+		let suda_seq = ${sudaInfo.suda_seq};
+		let user_id = '${user.user_id}';
+		
+		console.log("수다 넘버 : " + suda_seq);
+		console.log("유저 이름 : " + user_id);
+		
+		if(likeval > 0){
+			console.log(likeval + " 좋아요 누름 ");
+			$('#LikeBtn').html("");
+			$('#LikeBtn').click(function() {
+				$.ajax({
+					type :'post',
+					url : '/likeDown',
+					contentType: 'application/json',
+					data : JSON.stringify(
+							{
+								'suda_seq' : suda_seq,
+								'user_id' : user_id
+							}		
+						),
+					success : function(data) {
+						alert('좋아요 취소!');
+						location.reload();
+					}, error : function(){
+						alert('에러');
+					}
+				})// 아작스 끝
+			})
 
+		}else{
+			console.log(likeval + " 좋아요 안누름")
+			console.log(user_id);
+			$('#LikeBtn').click(function() {
+				$.ajax({
+					type :'post',
+					url : '/likeUp',
+					contentType: 'application/json',
+					data : JSON.stringify(
+							{
+								'suda_seq' : suda_seq,
+								'user_id' : user_id
+							}		
+						),
+					success : function(data) {
+						alert('좋아요!');
+						location.reload();
+					},error : function(){
+						alert('에러');
+					}// 에러끝 
+		   		})// 아작스 끝
+			  })// click function 끝
+	 	   	}//esle 끝 
+		
 		getCommentList();
+		
+		
 
 	});
 
@@ -267,7 +342,13 @@ c:hover:after {
 			
 
 		}
+	
+		
+		
+	
+		
 	</script>
+
 </body>
 
 </html>

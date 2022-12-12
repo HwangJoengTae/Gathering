@@ -1,9 +1,11 @@
 package com.gathering.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.gathering.dto.LikeVO;
 import com.gathering.dto.SudaVO;
 import com.gathering.paging.Criteria;
 
@@ -36,4 +38,16 @@ public interface SudaMapper {
 	
 	//댓글 갯수
 	public int updateReplyCount(int suda_seq);
+	
+	//좋아요 확인
+	public int findLike(LikeVO likeVO);
+	
+	//좋아요 갯수
+	public LikeVO getLike(LikeVO likeVO);
+	
+	//좋아요 증가
+	public int likeUp(LikeVO likeVO);
+		
+	//좋아요 감소
+	public int likeDown(LikeVO likeVO);
 }

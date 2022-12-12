@@ -11,11 +11,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.gathering.dto.CrewInfoVIewVO;
 import com.gathering.dto.GroupInfoVO;
+import com.gathering.dto.LikeVO;
 import com.gathering.dto.SudaVO;
 import com.gathering.dto.UserInfoVO;
 import com.gathering.paging.Criteria;
@@ -151,21 +154,40 @@ public class SudaController {
 	public String sudaDetail(SudaVO sudaVO, HttpSession session,Model model) {
 		SudaVO suda = sudaService.getSudaView(sudaVO.getSuda_seq());
 		UserInfoVO user = (UserInfoVO) session.getAttribute("user");
-
+		
 		if (user == null) {
 			return "user/login";
 
 		} else {
+			//객체 생성
+			LikeVO like = new LikeVO();
+			
+			
+			like.setSuda_seq(sudaVO.getSuda_seq());
+			like.setUser_id(user.getUser_id());
+			
+							
+			//모델에 저장
+			model.addAttribute("like", sudaService.findLike(like));
+			model.addAttribute("getLike",sudaService.getLike(like));
+			System.out.println("좋아요 전체목록 입니다 : "+sudaService.findLike(like));	
+			System.out.println("좋아요 갯수 입니다 : " + sudaService.getLike(like));	
+			
+							
+			
 			//크루 불러오기
 			List<CrewInfoVIewVO> crew=groupNoticeService.getCrewList(sudaVO.getGroup_seq(), user.getUser_id());	 
 			
 			model.addAttribute("crewList",crew);
+			
+			
 			//수다 게시글 정보 			
 			model.addAttribute("sudaInfo",suda);
 			
 			sudaService.updateReplyCount(sudaVO.getSuda_seq());
 			
-			System.out.println(suda);
+			
+			
 			return "/group/groupSudaDetail";
 		}
 
@@ -221,6 +243,25 @@ public class SudaController {
 				return "/group/groupAlbumResult";
 			}
 
+		}
+		
+		//좋아요 업
+		@ResponseBody
+		@PostMapping("/likeUp")
+		public void likeUp(@RequestBody LikeVO vo) {
+									
+			sudaService.likeUp(vo);
+			System.out.println("like vo 정보 :" + vo);
+		}
+		
+		//좋아요 다운
+		@ResponseBody
+		@PostMapping("/likeDown")
+		public void likeDown(@RequestBody LikeVO vo) {
+			
+			
+			sudaService.likeDown(vo);
+			System.out.println("like vo 정보 :" + vo);
 		}
 	
 
