@@ -11,6 +11,7 @@ public class SudaVO {
 	private int group_seq;
 	private String content;
 	private int reply_count;
+	private int like_cnt;
 	
 	
 	

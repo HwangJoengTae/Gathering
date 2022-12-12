@@ -59,9 +59,6 @@
 								data-feather="users"></span> 모임수다
 						</a></li>
 					</ul>
-
-
-
 				</div>
 			</nav>
 
@@ -76,23 +73,17 @@
 					<input type="hidden" name="keyword"
 						value="${pageMaker.cri.keyword }"> <input type="hidden"
 						name="type" value="${pageMaker.cri.type }">
-
-
 				</form>
 
 				<form method="get" id="moveForm" action="/group/groupSuda">
 					<h2 style="padding-top: 5%">수다방</h2>
-					<button type="button"  class="btn btn-outline-dark " >조회순</button>
-					<button type="button"  class="btn btn-outline-dark " data-bs-toggle="button" >댓글순</button>
-					<button type="button"  class="btn btn-outline-dark ">최신순</button>
 					
-					
-
-
 				
-
 					<div class="row mb-2 align-items-center">
 						<div class="col">
+							
+							<button type="button" class="btn btn-outline-dark">최신순</button>
+							<button type="button"  class="btn btn-outline-dark">좋아요순</button>
 							<button type="button" class="btn btn-outline-primary"
 								style="float: right; margin-right: 10px"
 								onclick="location.href='/group/sudaForm?group_seq=${sudaVO.group_seq}'">글쓰기</button>
@@ -108,6 +99,7 @@
 									<th scope="col" style="width: 50%; text-align: center;">수다
 										주제</th>
 									<th scope="col" style="text-align: center">작성자</th>
+									<th scope="col" style="text-align: center"> <i class="bi-heart-fill" style="font-size:1em; color: red; cursor: pointer;"></i></th>
 
 
 
@@ -127,13 +119,12 @@
 										
 										</td>
 										<td style="text-align: center">${sudaVO.user_id}</td>
+										<td style="text-align: center">${sudaVO.like_cnt}</td>
 
 									</tr>
 								</c:forEach>
 							</tbody>
 						</table>
-
-
 					</div>
 
 

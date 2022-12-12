@@ -1,10 +1,13 @@
 package com.gathering.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.gathering.dto.LikeVO;
 import com.gathering.dto.SudaVO;
 import com.gathering.mapper.SudaMapper;
 import com.gathering.paging.Criteria;
@@ -73,6 +76,31 @@ public class SudaServiceImpl implements SudaService {
 	public int updateReplyCount(int suda_seq) {
 		
 		return sudaMapper.updateReplyCount(suda_seq);
+	}
+
+	@Override
+	public int findLike(LikeVO likeVO) {
+		
+		return sudaMapper.findLike(likeVO);
+	}
+
+	@Override
+	public int likeUp(LikeVO likeVO) {
+		
+		return sudaMapper.likeUp(likeVO);
+	}
+
+	@Override
+	public int likeDown(LikeVO likeVO) {
+		
+		return sudaMapper.likeDown(likeVO);
+	}
+
+	@Override
+	public LikeVO getLike(LikeVO likeVO) {
+		
+		
+		return sudaMapper.getLike(likeVO);
 	}
 
 	
