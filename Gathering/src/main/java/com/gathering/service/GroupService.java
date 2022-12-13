@@ -45,6 +45,8 @@ public interface GroupService {
 	
 	// 찜삭제
 	public void deleteInterestGroup(InterestGroupVO vo);
-
+	
+	//모임 리스트 (페이징)
+	public List<GroupInfoVO> bestList(GroupInfoVO vo);
 }
 

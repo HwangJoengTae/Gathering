@@ -128,8 +128,15 @@
     	DELETE FROM interest_group WHERE user_id=#{user_id} AND group_seq=#{group_seq}
     </delete>
     
+    <!-- 베스트 리스트 -->
+    <select id="bestList" resultType="com.gathering.dto.GroupInfoVO">
+    	select g.group_name , s.content ,b.likenum 
+    	from group_info g  
+    	inner join suda s
+		on s.group_seq = g.group_seq
+		inner join board_like b on s.suda_seq=b.suda_seq 
     
-    
+    </select>
     
     
 </mapper>

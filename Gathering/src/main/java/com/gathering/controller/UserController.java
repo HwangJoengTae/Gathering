@@ -1,8 +1,8 @@
 package com.gathering.controller;
 
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,7 +12,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 
+import com.gathering.dto.GroupInfoVO;
+import com.gathering.dto.SudaVO;
 import com.gathering.dto.UserInfoVO;
+import com.gathering.paging.Criteria;
+import com.gathering.paging.PageMakerDTO;
+import com.gathering.service.GroupService;
+import com.gathering.service.SudaService;
 import com.gathering.service.UserService;
 import com.gathering.util.FindUtil;
 import com.gathering.util.MailUtil;
@@ -27,10 +33,33 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 	
+	@Autowired
+	private GroupService groupService;
+	
+	@Autowired
+	private SudaService sudaService;
 	// 메인페이지로
 	@GetMapping("/main")
-	public void mainView() {
+	public String mainView(Model model,GroupInfoVO vo,SudaVO sudaVO,Criteria cri) {
+		List<SudaVO> suda =sudaService.getListPaging(cri);
+		model.addAttribute("sudaList",suda);
 		
+		
+		int total = sudaService.getTotal(cri);
+
+		PageMakerDTO pageMaker = new PageMakerDTO(cri, total);
+
+		model.addAttribute("pageMaker", pageMaker);
+		
+		model.addAttribute("list",groupService.bestList(vo));
+		
+		
+		cri.setAmount(9);
+		List<GroupInfoVO> groupList = groupService.getGroupListPaging(cri);
+		
+		model.addAttribute("groupList", groupList);
+				
+		return "/main";
 	}
 	
 	// 회원가입페이지로

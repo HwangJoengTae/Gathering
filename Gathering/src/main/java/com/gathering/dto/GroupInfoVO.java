@@ -12,6 +12,8 @@ public class GroupInfoVO {
 	private String kind;
 	private String region;
 	private String member_limit;
+	private String content;
+	private String likenum;
 	
 	
 }

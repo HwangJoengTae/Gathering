@@ -9,6 +9,7 @@ import com.gathering.dto.CrewVO;
 import com.gathering.dto.GroupInfoVO;
 import com.gathering.dto.GroupNoticeVO;
 import com.gathering.dto.InterestGroupVO;
+import com.gathering.dto.SudaVO;
 import com.gathering.paging.Criteria;
 
 @Mapper
@@ -57,6 +58,9 @@ public interface GroupMapper {
 	
 	// 찜삭제
 	public void deleteInterestGroup(InterestGroupVO vo);
+	
+	//모임 리스트 (페이징)
+	public List<GroupInfoVO> bestList(GroupInfoVO vo);
 	
 }
 

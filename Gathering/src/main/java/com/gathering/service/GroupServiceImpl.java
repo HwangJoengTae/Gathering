@@ -107,6 +107,12 @@ public class GroupServiceImpl implements GroupService {
 		groupMapper.deleteInterestGroup(vo);
 	}
 
+	@Override
+	public List<GroupInfoVO> bestList(GroupInfoVO vo) {
+		
+		return groupMapper.bestList(vo);
+	}
+
 
 
 

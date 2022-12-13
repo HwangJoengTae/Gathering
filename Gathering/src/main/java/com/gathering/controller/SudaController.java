@@ -4,8 +4,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,10 +26,13 @@ import com.gathering.service.GroupNoticeService;
 import com.gathering.service.GroupService;
 import com.gathering.service.SudaService;
 
+import lombok.extern.log4j.Log4j2;
+
+@Log4j2
 @SessionAttributes("user")
 @Controller
 public class SudaController {
-	private final Logger logger = LoggerFactory.getLogger("SudaController의 로그");
+	
 
 	@Autowired
 	private SudaService sudaService;
@@ -67,7 +68,7 @@ public class SudaController {
 	
 	@GetMapping("/group/groupSuda")
 	public String getsudaList(HttpSession session,CrewInfoVIewVO cVo,Model model,Criteria cri,GroupInfoVO vo,SudaVO sudaVO) {
-		logger.info("수다리스트");
+			
 			UserInfoVO user= (UserInfoVO)session.getAttribute("user");
 			
 			if(user == null) {
